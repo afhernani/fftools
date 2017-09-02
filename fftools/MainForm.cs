@@ -168,8 +168,8 @@ namespace fftools
 		}
 		void BtnImagenClick(object sender, EventArgs e)
 		{
-            string res = "No se ha podido cargar la imagen ";
-            if(loadImagen()==false)
+            string res = $"No se ha podido cargar la imagen del fichero {name_Only}";
+            if (loadImagen()==false)
                 textBoxdatos.Text += res;
         }
         /// <summary>
@@ -195,7 +195,8 @@ namespace fftools
             return res;
         }
 
-        string name_Only;
+        string name_Only = String.Empty;
+
         private void btnExplore_Click(object sender, EventArgs e)
         {
             OpenFileDialog openfile = new OpenFileDialog()
@@ -211,7 +212,11 @@ namespace fftools
             {
                 textBoxfile.Text = openfile.FileName;
                 name_Only = openfile.SafeFileName;
-                loadImagen();
+                if (loadImagen())
+                {
+                    textBoxdatos.Text += "A sido imposible cargar "
+                        +$"la imgen del fichero {name_Only}";
+                }
             }
         }
     }
