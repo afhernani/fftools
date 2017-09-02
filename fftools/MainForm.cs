@@ -170,7 +170,7 @@ namespace fftools
 		{
             string res = "No se ha podido cargar la imagen ";
             if(loadImagen()==false)
-                textBoxfile.Text = res;
+                textBoxdatos.Text += res;
         }
         /// <summary>
         /// general carga la imagen.
@@ -178,16 +178,23 @@ namespace fftools
         /// <returns></returns>
         public bool loadImagen()
         {
+            bool res = false;
             Converter conv = new Converter();
             if (videofile == null && File.Exists(textBoxfile.Text))
             {
                 pictureBox.Image = conv.getImage(textBoxfile.Text);
-                return false;
+                res = true;
+                return res;
             }
-            pictureBox.Image = conv.getImage(videofile);
-            return true;
+            if (videofile != null)
+            {
+                pictureBox.Image = conv.getImage(videofile);
+                res = true;
+                return res;
+            }
+            return res;
         }
-        string filename = string.Empty;
+
         string name_Only;
         private void btnExplore_Click(object sender, EventArgs e)
         {
@@ -202,8 +209,9 @@ namespace fftools
 
             if (openfile.ShowDialog() == DialogResult.OK)
             {
-                filename = openfile.FileName;
+                textBoxfile.Text = openfile.FileName;
                 name_Only = openfile.SafeFileName;
+                loadImagen();
             }
         }
     }
