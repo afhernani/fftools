@@ -143,6 +143,7 @@ namespace fftools
             IniFile inifile = new IniFile(namefile);
             var res = inifile.Read("File");
             textBoxfile.Text = res;
+            loadImagen(); //carga la imagen al picture box
 			res = inifile.Read("File-Name");
             textBoxdatos.Text = res;
             //res = inifile.Read("HomePage");
