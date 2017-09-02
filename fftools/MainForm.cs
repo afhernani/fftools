@@ -168,14 +168,43 @@ namespace fftools
 		}
 		void BtnImagenClick(object sender, EventArgs e)
 		{
-			Converter conv = new Converter();
-			if(videofile==null && File.Exists(textBoxfile.Text))
-			{	   	
-				pictureBox.Image = conv.getImage(textBoxfile.Text);
-				return;
-			}
-			pictureBox.Image = conv.getImage(videofile);
-		}
-        
-	}
+            string res = "No se ha podido cargar la imagen ";
+            if(loadImagen()==false)
+                textBoxfile.Text = res;
+        }
+        /// <summary>
+        /// general carga la imagen.
+        /// </summary>
+        /// <returns></returns>
+        public bool loadImagen()
+        {
+            Converter conv = new Converter();
+            if (videofile == null && File.Exists(textBoxfile.Text))
+            {
+                pictureBox.Image = conv.getImage(textBoxfile.Text);
+                return false;
+            }
+            pictureBox.Image = conv.getImage(videofile);
+            return true;
+        }
+        string filename = string.Empty;
+        string name_Only;
+        private void btnExplore_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openfile = new OpenFileDialog()
+            {
+                Filter = "flv file(*.flv*)|*.flv|mp4 file(*.mp4*)|*.mp4|All files(*.*)|*.*",
+                Title = @"Open gif to load",
+                //InitialDirectory = Environment.CurrentDirectory,
+                //RestoreDirectory = true,
+                //Multiselect = true
+            };
+
+            if (openfile.ShowDialog() == DialogResult.OK)
+            {
+                filename = openfile.FileName;
+                name_Only = openfile.SafeFileName;
+            }
+        }
+    }
 }
