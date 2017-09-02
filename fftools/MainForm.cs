@@ -13,6 +13,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace fftools
 {
@@ -41,19 +42,24 @@ namespace fftools
 				return;
 			Converter conv = new Converter();
 			videofile = conv.GetVideoInfo(textBoxfile.Text);
-			StringBuilder build = new StringBuilder();
-			build.AppendLine(videofile.Duration.ToString());
-			build.AppendLine(videofile.DurationMs.ToString());
-			build.AppendLine(videofile.Path);
-			build.AppendLine(videofile.Height.ToString());
-			textBoxdatos.Text = build.ToString();
-			outputpack = conv.StrackImages(videofile,(int)numericValor.Value);
+            ShowDataFromVideofile();
+            outputpack = conv.StrackImages(videofile,(int)numericValor.Value);
 			LoadImageToPicture(0);
-			textBoxdatos.Text += newline + outputpack.ListImage.Count.ToString() + newline;
+			textBoxdatos.Text += outputpack.ListImage.Count.ToString() + newline;
 			btnConvert.Enabled = true;
 			btnmakeGif.Enabled = true;
 		}
+        private void ShowDataFromVideofile()
+        {
+            StringBuilder build = new StringBuilder();
+            build.AppendLine(videofile.Duration.ToString());
+            build.AppendLine(videofile.DurationMs.ToString());
+            build.AppendLine(videofile.Path);
+            build.AppendLine(videofile.Height.ToString());
+            textBoxdatos.Text = build.ToString();
+        }
         //variable almacena datos del video media
+        Converter conv;
 		VideoFile videofile = null;
         //salida de datos del video.
 		OutputPackage outputpack = null;
@@ -82,13 +88,25 @@ namespace fftools
 		void MainFormLoad(object sender, EventArgs e)
 		{
 			Index = 0;
-			btnConvert.Enabled = false;
-			btnmakeGif.Enabled = false;
+            conv = new Converter();
+            conv.MadeFilmGif += Conv_MadeFilmGif;
 			OpenDataInit();
 		}
-		void BtnConvertClick(object sender, EventArgs e)
+
+        private void Conv_MadeFilmGif(object sender, OutputPackage package)
+        {
+            if (InvokeRequired)
+                Invoke(new Action(() => {
+                    btnmakeGif.Enabled = true;
+                    outputpack.ListImage.Add((Image)package.PreviewImage.Clone());
+                    pictureBox.Image = (Image)package.PreviewImage.Clone();
+                    textBoxdatos.Text += newline + "Make-gif from file: => " + 
+                        Path.GetFileName(videofile.Path) + Environment.NewLine;
+                }));
+        }
+
+        void BtnConvertClick(object sender, EventArgs e)
 		{
-			Converter conv = new Converter();
 			OutputPackage package = conv.ConvertToFLV(videofile);
 			outputpack.VideoStream = package.VideoStream;
 			string filename = Path.Combine(Environment.CurrentDirectory, 
@@ -103,12 +121,12 @@ namespace fftools
 		{
 			// Todo: aqui
 			//
-			Converter conv = new Converter(); //instancia converter.-inicializa.
+			//instancia converter.-inicializa.
 			conv.FrameRate = 2;
-			OutputPackage package = conv.MakeGif(videofile, (int)numericValor.Value);
-			outputpack.ListImage.Add((Image)package.PreviewImage.Clone());
-			pictureBox.Image = (Image)package.PreviewImage.Clone();
-			textBoxdatos.Text += newline + "Make-gif from file: => " + Path.GetFileName(videofile.Path) + Environment.NewLine;
+            int num = videofile.DurationMs / (int)numericValor.Value;
+            conv.MakeGifThread(videofile, num);
+            //OutputPackage package = conv.MakeGif(videofile, (int)numericValor.Value);
+			
 			//
 			btnmakeGif.Enabled = false;
 		}	
@@ -169,10 +187,9 @@ namespace fftools
 		}
 		void BtnImagenClick(object sender, EventArgs e)
 		{
-            string res = $"No se ha podido cargar la imagen del fichero {name_Only}";
-            if (loadImagen()==false)
-                textBoxdatos.Text += res;
+            SaveFileToDisk();
         }
+        Task t;
         /// <summary>
         /// devuelve true si carga la imagen sin problemas
         /// </summary>
@@ -180,16 +197,16 @@ namespace fftools
         public bool loadImagen()
         {
             bool res = false;
-            Converter conv = new Converter();
-            if (videofile == null && File.Exists(textBoxfile.Text))
-            {
+            if (File.Exists(textBoxfile.Text))
+            { 
+                t = Task.Factory.StartNew(new Action(() => {
+
+                    videofile = conv.GetVideoInfo(textBoxfile.Text);
+                    outputpack = conv.StrackImages(videofile, 1);
+                }));
                 pictureBox.Image = conv.getImage(textBoxfile.Text);
-                res = true;
-                return res;
-            }
-            if (videofile != null)
-            {
-                pictureBox.Image = conv.getImage(videofile);
+                //pictureBox.Image = conv.getImage(videofile);
+                ShowDataFromVideofile();
                 res = true;
                 return res;
             }
@@ -228,15 +245,18 @@ namespace fftools
                 Title = @"Save gif to disk",
                 //InitialDirectory = Environment.CurrentDirectory,
                 //RestoreDirectory = true,
+                ValidateNames = false,
+                FileName = textBoxfile.Text + "_thumbss_0000.gif"
             };
             if (savefile.ShowDialog() == DialogResult.OK)
             {
-                if (outputpack != null && outputpack.VideoStream!=null)
+                if (pictureBox.Image != null )
                 {
-                    using (FileStream file = new FileStream(savefile.FileName, FileMode.Create, System.IO.FileAccess.Write))
-                    {
-                        outputpack.VideoStream.WriteTo(file);
-                    }
+                    pictureBox.Image.Save(savefile.FileName);
+                    //using (FileStream file = new FileStream(savefile.FileName, FileMode.Create, System.IO.FileAccess.Write))
+                    //{
+                    //    outputpack.VideoStream.WriteTo(file);
+                    //}
                 }
             }
         }

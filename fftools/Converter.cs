@@ -552,9 +552,10 @@ namespace fftools
 				MadeFilmGif(this, pack);
 			//MadeFilmGif?.Invoke(this, pack);
 		}
-		#endregion
-		#region funciones-makegif
-		public OutputPackage MakeGif(string inputpath, int num)
+        #endregion
+        #region funciones-makegif
+
+        public OutputPackage MakeGif(string inputpath, int num)
 		{
 			VideoFile vf = null;
 			try {
@@ -583,7 +584,10 @@ namespace fftools
 
 			string filesearch = System.Guid.NewGuid().ToString();
 			string filename = filesearch+"%04d.png";
-			string finalpath = Path.Combine(Path.Combine(Path.GetDirectoryName(input.Path), "Thumbails"), filename);
+            string dirwork = Path.Combine(Path.GetDirectoryName(input.Path), "Thumbails");  //directorio de trabajo.
+            //comprobar que existe: si no crearlo.
+            if (!Directory.Exists(dirwork)) Directory.CreateDirectory(dirwork); //lo creamos.
+            string finalpath = Path.Combine(Path.Combine(Path.GetDirectoryName(input.Path), "Thumbails"), filename);
 			string Params = String.Format("-y -i \"{0}\" -vf scale=220:-1,fps=1/{1} \"{2}\"",input.Path,num,finalpath);
 			Debug.WriteLine(Params);
 			OnlyRunProcess(Params);
@@ -682,16 +686,16 @@ namespace fftools
 
 			//set up the parameters for getting a previewimage
 			//string filesearch = System.Guid.NewGuid().ToString();
-			string filename = "{input.Path}_thumbs_0000.gif";
+			string filename = $"{input.Path}_thumbs_0000.gif";
 			string finalpath = filename;
-			string Params = "-y -i \"{input.Path}\" -vf scale=220:-1 \"{finalpath}\"";
+			string Params = $"-y -i \"{input.Path}\" -vf scale=220:-1 \"{finalpath}\"";
 			Debug.WriteLine(Params);
 			//string output = RunProcess(Params);
 
 			//ou.RawOutput = output;
 			////
 			//create a process info
-			string ffexe = "\"{FFExe}\"";
+			string ffexe = $"\"{FFExe}\"";
 			ProcessStartInfo oInfo = new ProcessStartInfo(ffexe, Params);
 			oInfo.UseShellExecute = false;
 			oInfo.CreateNoWindow = true;
@@ -727,6 +731,7 @@ namespace fftools
 
 				if (File.Exists(finalpath)) {
 					ou.VideoStream = LoadMemoryStreamFromFile(finalpath);
+                    File.Delete(finalpath);
 				}
 
 				proc.Close();
