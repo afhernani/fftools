@@ -62,7 +62,7 @@ namespace fftools
             // 
             this.btnRun.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnRun.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnRun.Location = new System.Drawing.Point(211, 378);
+            this.btnRun.Location = new System.Drawing.Point(220, 378);
             this.btnRun.Name = "btnRun";
             this.btnRun.Size = new System.Drawing.Size(45, 35);
             this.btnRun.TabIndex = 0;
@@ -156,7 +156,7 @@ namespace fftools
             this.btnImagen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnImagen.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnImagen.ForeColor = System.Drawing.Color.Red;
-            this.btnImagen.Location = new System.Drawing.Point(262, 378);
+            this.btnImagen.Location = new System.Drawing.Point(282, 378);
             this.btnImagen.Name = "btnImagen";
             this.btnImagen.Size = new System.Drawing.Size(109, 35);
             this.btnImagen.TabIndex = 7;
