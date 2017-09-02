@@ -173,7 +173,7 @@ namespace fftools
                 textBoxdatos.Text += res;
         }
         /// <summary>
-        /// general carga la imagen.
+        /// devuelve true si carga la imagen sin problemas
         /// </summary>
         /// <returns></returns>
         public bool loadImagen()
@@ -212,7 +212,7 @@ namespace fftools
             {
                 textBoxfile.Text = openfile.FileName;
                 name_Only = openfile.SafeFileName;
-                if (loadImagen())
+                if (loadImagen()==false)
                 {
                     textBoxdatos.Text += "A sido imposible cargar "
                         +$"la imgen del fichero {name_Only}";
