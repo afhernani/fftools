@@ -54,9 +54,9 @@ namespace fftools
 			btnmakeGif.Enabled = true;
 		}
         //variable almacena datos del video media
-		VideoFile videofile;
+		VideoFile videofile = null;
         //salida de datos del video.
-		OutputPackage outputpack;
+		OutputPackage outputpack = null;
 		int Index { get; set; }
 		private void LoadImageToPicture(int index){
 			if (outputpack.ListImage.Count == 0)
@@ -217,6 +217,26 @@ namespace fftools
                 {
                     textBoxdatos.Text += "A sido imposible cargar "
                         +$"la imgen del fichero {name_Only}";
+                }
+            }
+        }
+        private void SaveFileToDisk()
+        {
+            SaveFileDialog savefile = new SaveFileDialog()
+            {
+                Filter = "Gif file(*.gif*)|*.gif",
+                Title = @"Save gif to disk",
+                //InitialDirectory = Environment.CurrentDirectory,
+                //RestoreDirectory = true,
+            };
+            if (savefile.ShowDialog() == DialogResult.OK)
+            {
+                if (outputpack != null && outputpack.VideoStream!=null)
+                {
+                    using (FileStream file = new FileStream(savefile.FileName, FileMode.Create, System.IO.FileAccess.Write))
+                    {
+                        outputpack.VideoStream.WriteTo(file);
+                    }
                 }
             }
         }
