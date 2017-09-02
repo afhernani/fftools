@@ -60,8 +60,9 @@ namespace fftools
             // 
             // btnRun
             // 
+            this.btnRun.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnRun.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnRun.Location = new System.Drawing.Point(615, 211);
+            this.btnRun.Location = new System.Drawing.Point(211, 378);
             this.btnRun.Name = "btnRun";
             this.btnRun.Size = new System.Drawing.Size(45, 35);
             this.btnRun.TabIndex = 0;
@@ -71,6 +72,10 @@ namespace fftools
             // 
             // pictureBox
             // 
+            this.pictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.pictureBox.Location = new System.Drawing.Point(12, 35);
             this.pictureBox.Name = "pictureBox";
             this.pictureBox.Size = new System.Drawing.Size(380, 234);
@@ -81,6 +86,8 @@ namespace fftools
             // 
             // textBoxfile
             // 
+            this.textBoxfile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxfile.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxfile.Location = new System.Drawing.Point(12, 9);
             this.textBoxfile.Name = "textBoxfile";
@@ -89,17 +96,18 @@ namespace fftools
             // 
             // textBoxdatos
             // 
-            this.textBoxdatos.Location = new System.Drawing.Point(398, 9);
+            this.textBoxdatos.Location = new System.Drawing.Point(12, 275);
             this.textBoxdatos.Multiline = true;
             this.textBoxdatos.Name = "textBoxdatos";
             this.textBoxdatos.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBoxdatos.Size = new System.Drawing.Size(262, 196);
+            this.textBoxdatos.Size = new System.Drawing.Size(380, 97);
             this.textBoxdatos.TabIndex = 3;
             // 
             // numericValor
             // 
+            this.numericValor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.numericValor.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.numericValor.Location = new System.Drawing.Point(398, 211);
+            this.numericValor.Location = new System.Drawing.Point(12, 378);
             this.numericValor.Maximum = new decimal(new int[] {
             6,
             0,
@@ -121,8 +129,9 @@ namespace fftools
             // 
             // btnConvert
             // 
+            this.btnConvert.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnConvert.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnConvert.Location = new System.Drawing.Point(516, 211);
+            this.btnConvert.Location = new System.Drawing.Point(112, 378);
             this.btnConvert.Name = "btnConvert";
             this.btnConvert.Size = new System.Drawing.Size(93, 35);
             this.btnConvert.TabIndex = 5;
@@ -132,8 +141,9 @@ namespace fftools
             // 
             // btnmakeGif
             // 
+            this.btnmakeGif.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnmakeGif.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnmakeGif.Location = new System.Drawing.Point(465, 211);
+            this.btnmakeGif.Location = new System.Drawing.Point(61, 378);
             this.btnmakeGif.Name = "btnmakeGif";
             this.btnmakeGif.Size = new System.Drawing.Size(45, 35);
             this.btnmakeGif.TabIndex = 6;
@@ -143,11 +153,12 @@ namespace fftools
             // 
             // btnImagen
             // 
+            this.btnImagen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnImagen.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnImagen.ForeColor = System.Drawing.Color.Red;
-            this.btnImagen.Location = new System.Drawing.Point(398, 239);
+            this.btnImagen.Location = new System.Drawing.Point(262, 378);
             this.btnImagen.Name = "btnImagen";
-            this.btnImagen.Size = new System.Drawing.Size(61, 30);
+            this.btnImagen.Size = new System.Drawing.Size(61, 35);
             this.btnImagen.TabIndex = 7;
             this.btnImagen.Text = "&Image";
             this.btnImagen.UseVisualStyleBackColor = true;
@@ -155,6 +166,7 @@ namespace fftools
             // 
             // btnExplore
             // 
+            this.btnExplore.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnExplore.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnExplore.ForeColor = System.Drawing.Color.Red;
             this.btnExplore.Location = new System.Drawing.Point(350, 9);
@@ -169,7 +181,7 @@ namespace fftools
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(670, 281);
+            this.ClientSize = new System.Drawing.Size(403, 425);
             this.Controls.Add(this.btnExplore);
             this.Controls.Add(this.btnImagen);
             this.Controls.Add(this.btnmakeGif);
