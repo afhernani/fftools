@@ -54,7 +54,7 @@ namespace fftools
                     pictureBox.Image = img;
                     //trackBar.Value = minimo; //da error x doble llamada
                 }
-                //Thread.Sleep(30);
+                Thread.Sleep(30);
                 minimo++;
             }
         }
