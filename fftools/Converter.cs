@@ -731,7 +731,6 @@ namespace fftools
 
 				if (File.Exists(finalpath)) {
 					ou.VideoStream = LoadMemoryStreamFromFile(finalpath);
-                    File.Delete(finalpath);
 				}
 
 				proc.Close();

@@ -14,6 +14,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Drawing.Imaging;
 
 namespace fftools
 {
@@ -135,46 +136,28 @@ namespace fftools
         /// </summary>
         private void SaveDataIni()
         {
-            //escribir codigo aqui
-            string dir = Environment.CurrentDirectory;
-            string namefile = Path.Combine(dir, "dat.ini");
-            IniFile inifile = new IniFile(namefile);
-            inifile.Write("File", textBoxfile.Text);
-            inifile.Write("File-Name", Path.GetFileName(textBoxfile.Text));
-            inifile.Write("DefaultVolume", "100", "Audio");
-            inifile.Write("HomePage", textBoxfile.Text, "Web");
-            inifile.Write("name-Scraping-result",textBoxfile.Text,"temporal");
-            inifile.Write("doc-html-down",textBoxfile.Text,"temporal");
-            inifile.Write("DefaultVolume", "80", "Audio");
-            //recuperamos una clave.
-            //var res = inifile.Read("doc-html-down", "temporal");
-            //txtBoxResult.Text = res;
-            Debug.WriteLine("Proceso de guardado en fichero ini terminado...");
+            Properties.Settings.Default.Filename = textBoxfile.Text;
+            Properties.Settings.Default.Comentarios = textBoxdatos.Text;
+            Properties.Settings.Default.Save();
+            
         }
         /// <summary>
         /// open data ini
         /// </summary>
         private void OpenDataInit()
         {
-            string namefile = Path.Combine(Environment.CurrentDirectory, "dat.ini");
-            if (!File.Exists(namefile)) return; //si no existe salimos para evitar errores.
-            IniFile inifile = new IniFile(namefile);
-            var res = inifile.Read("File");
-            textBoxfile.Text = res;
-            loadImagen(); //carga la imagen al picture box
-			res = inifile.Read("File-Name");
-            textBoxdatos.Text = res;
-            //res = inifile.Read("HomePage");
-            //txtUrl.Text = res;
-            //ClearCachedSWFFiles();
-            //webBrowser1.Navigate(res); //= new Uri(res);
-            /*if (inifile.KeyExists("name-Scraping-result", "temporal"))
+            string filename = Properties.Settings.Default.Filename;
+            string comments = Properties.Settings.Default.Comentarios;
+            if (!String.IsNullOrEmpty(filename))
             {
-                var script = inifile.Read("name-Scraping-result", "temporal");
-                btnHtml.Tag = script;
-                txtBoxResult.Text = @"asignado el fichero temporal de scraping de la" +
-                                    $"ultima secion {script}";
-            }*/
+                textBoxfile.Text = filename;
+                loadImagen();
+            }
+            if (!String.IsNullOrEmpty(comments))
+            {
+                textBoxdatos.Text = comments;
+            }
+            
         }
 		/// <summary>
 		/// save data ini to closing form
@@ -252,7 +235,7 @@ namespace fftools
             {
                 if (pictureBox.Image != null )
                 {
-                    pictureBox.Image.Save(savefile.FileName);
+                    pictureBox.Image.Save(savefile.FileName, ImageFormat.Gif);
                     //using (FileStream file = new FileStream(savefile.FileName, FileMode.Create, System.IO.FileAccess.Write))
                     //{
                     //    outputpack.VideoStream.WriteTo(file);
