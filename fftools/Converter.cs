@@ -817,8 +817,54 @@ namespace fftools
 			Debug.WriteLine("fin de proceso de extraccion");
 			return ou;
 		}
-		#endregion
-	}
+        public System.Drawing.Image getImage(string inputpath, int time)
+        {
+            VideoFile vf = null;
+            try
+            {
+                vf = new VideoFile(inputpath);
+            }
+            catch (Exception ex)
+            {
+                throw new ConvertException(ex.ToString());
+            }
+
+            System.Drawing.Image oo = getImage(vf, time);
+            return oo;
+        }
+        public System.Drawing.Image getImage(VideoFile input, int time)
+        {
+            if (!input.infoGathered)
+            {
+                GetVideoInfo(input);
+            }
+            System.Drawing.Image ou;
+            string temp = Path.GetTempPath();
+            Debug.WriteLine(temp + " Image thumbails from file");
+            int valor = time;//imagen en la posicion indicada. 
+            string fil = System.Guid.NewGuid().ToString();
+            string filename = fil + ".png";
+            string finalpath = Path.Combine(temp, filename);
+            string Params = String.Format("-ss {1} -i \"{0}\" -vframes {1} \"{2}\" -hide_banner", input.Path, valor, finalpath);
+            Debug.WriteLine(Params);
+            OnlyRunProcess(Params);
+
+            ou = LoadImageFromFile(finalpath);
+            try
+            {
+                File.Delete(finalpath);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                throw new ConvertException(ex.ToString());
+            }
+
+            Debug.WriteLine("fin de proceso de extraccion");
+            return ou;
+        }
+        #endregion
+    }
 
 	public class VideoFile
 	{

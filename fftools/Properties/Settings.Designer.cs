@@ -46,5 +46,17 @@ namespace fftools.Properties {
                 this["Comentarios"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Time {
+            get {
+                return ((int)(this["Time"]));
+            }
+            set {
+                this["Time"] = value;
+            }
+        }
     }
 }

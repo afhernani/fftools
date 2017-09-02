@@ -15,6 +15,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Drawing.Imaging;
+using System.Threading;
 
 namespace fftools
 {
@@ -37,18 +38,32 @@ namespace fftools
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
 		}
-		void BtnRunClick(object sender, EventArgs e)
+        CancellationTokenSource cs;
+        public void TreadShowImagens(CancellationTokenSource cs)
+        {
+            int minimo = 1;
+            int maximo = trackBar.Maximum;
+            VideoFile video = videofile;
+            OutputPackage outpackge = outputpack;
+            while(minimo < maximo)
+            {
+                cs.Token.ThrowIfCancellationRequested();//cancelamos si es requerido
+                Image img = conv.getImage(video, minimo);
+                if (InvokeRequired)
+                {
+                    pictureBox.Image = img;
+                    //trackBar.Value = minimo; //da error x doble llamada
+                }
+                //Thread.Sleep(30);
+                minimo++;
+            }
+        }
+        void BtnRunClick(object sender, EventArgs e)
 		{
-			if (String.IsNullOrEmpty(textBoxfile.Text))
-				return;
-			Converter conv = new Converter();
-			videofile = conv.GetVideoInfo(textBoxfile.Text);
-            ShowDataFromVideofile();
-            outputpack = conv.StrackImages(videofile,(int)numericValor.Value);
-			LoadImageToPicture(0);
-			textBoxdatos.Text += outputpack.ListImage.Count.ToString() + newline;
-			btnConvert.Enabled = true;
-			btnmakeGif.Enabled = true;
+            cs = new CancellationTokenSource();
+            t = Task.Factory.StartNew(new Action(() => {
+                TreadShowImagens(cs);
+            }));
 		}
         private void ShowDataFromVideofile()
         {
@@ -64,7 +79,28 @@ namespace fftools
 		VideoFile videofile = null;
         //salida de datos del video.
 		OutputPackage outputpack = null;
-		int Index { get; set; }
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == (Keys.Control | Keys.G))
+            {
+                this.Text = ("<CTRL> + G Save Imagen");
+                SaveFileToDisk();
+            }
+            if (keyData == (Keys.Escape))
+            {
+                this.Text = ("<ESC>:  Cancela tarea.");
+                cs.Cancel();
+            }
+            if (keyData == (Keys.Control | Keys.H))
+            {
+                this.Text = ("<CTRL> + H help comands");
+                MessageBox.Show(" shotkut:\n" +
+                "<CTRL> + G Save Imagen.\n" +
+                "<ESC>:  Cancela tarea.\n" );
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+        int Index { get; set; }
 		private void LoadImageToPicture(int index){
 			if (outputpack.ListImage.Count == 0)
 				return;
@@ -186,6 +222,9 @@ namespace fftools
 
                     videofile = conv.GetVideoInfo(textBoxfile.Text);
                     outputpack = conv.StrackImages(videofile, 1);
+                    if (InvokeRequired)
+                        Invoke(new Action(() => {
+                            trackBar.Maximum = videofile.DurationMs-10; }));
                 }));
                 pictureBox.Image = conv.getImage(textBoxfile.Text);
                 //pictureBox.Image = conv.getImage(videofile);
@@ -224,8 +263,9 @@ namespace fftools
         {
             SaveFileDialog savefile = new SaveFileDialog()
             {
-                Filter = "Gif file(*.gif*)|*.gif",
+                Filter = "Gif file(*.gif*)|*.gif|Png file(*.png*)|*.png|Jpg file(*.jpg*)|*.jpg",
                 Title = @"Save gif to disk",
+                FilterIndex =2,
                 //InitialDirectory = Environment.CurrentDirectory,
                 //RestoreDirectory = true,
                 ValidateNames = false,
@@ -242,6 +282,11 @@ namespace fftools
                     //}
                 }
             }
+        }
+
+        private void trackBar_Scroll(object sender, EventArgs e)
+        {
+            pictureBox.Image = conv.getImage(videofile, trackBar.Value);
         }
     }
 }
