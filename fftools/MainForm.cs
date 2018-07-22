@@ -16,6 +16,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Drawing.Imaging;
 using System.Threading;
+using System.Globalization;
 
 namespace fftools
 {
@@ -43,6 +44,7 @@ namespace fftools
         {
             int minimo = 1;
             int maximo = trackBar.Maximum;
+            
             VideoFile video = videofile;
             OutputPackage outpackge = outputpack;
             while(minimo < maximo)
@@ -51,10 +53,10 @@ namespace fftools
                 Image img = conv.getImage(video, minimo);
                 if (InvokeRequired)
                 {
-                    pictureBox.Image = img;
-                    //trackBar.Value = minimo; //da error x doble llamada
+                    Invoke(new Action(()=>pictureBox.Image = img));
+                    Invoke(new Action(()=> trackBar.Value = minimo)); //da error x doble llamada
                 }
-                Thread.Sleep(30);
+                Thread.Sleep(10);
                 minimo++;
             }
         }
@@ -68,10 +70,11 @@ namespace fftools
         private void ShowDataFromVideofile()
         {
             StringBuilder build = new StringBuilder();
-            build.AppendLine(videofile.Duration.ToString());
-            build.AppendLine(videofile.DurationMs.ToString());
-            build.AppendLine(videofile.Path);
-            build.AppendLine(videofile.Height.ToString());
+            double milisegundos = videofile.Duration.TotalMilliseconds;
+            build.AppendLine($"duracion total miliseconds: {milisegundos}");
+            build.AppendLine($"duracion total miliseconds: {videofile.DurationMs}");
+            build.AppendLine($"Origen datos: {videofile.Path}");
+            build.AppendLine($"video ancho: {videofile.Width} x alto: {videofile.Height}");
             textBoxdatos.Text = build.ToString();
         }
         //variable almacena datos del video media
@@ -170,11 +173,12 @@ namespace fftools
 		/// <summary>
         /// guardar datos al fichero ini.
         /// </summary>
-        private void SaveDataIni()
+        private void SaveData()
         {
             Properties.Settings.Default.Filename = textBoxfile.Text;
             Properties.Settings.Default.Comentarios = textBoxdatos.Text;
             Properties.Settings.Default.Save();
+            KillProcess("ffmpeg");
             
         }
         /// <summary>
@@ -202,7 +206,7 @@ namespace fftools
 		/// <param name="e"></param>
         void MainFormFormClosing(object sender, FormClosingEventArgs e)
 		{
-			SaveDataIni();
+			SaveData();
 		}
 		void BtnImagenClick(object sender, EventArgs e)
 		{
@@ -217,14 +221,18 @@ namespace fftools
         {
             bool res = false;
             if (File.Exists(textBoxfile.Text))
-            { 
+            {
+                trackBar.Enabled = false;
                 t = Task.Factory.StartNew(new Action(() => {
 
                     videofile = conv.GetVideoInfo(textBoxfile.Text);
                     outputpack = conv.StrackImages(videofile, 1);
                     if (InvokeRequired)
                         Invoke(new Action(() => {
-                            trackBar.Maximum = videofile.DurationMs-10; }));
+                            trackBar.Maximum = videofile.DurationMs-1;
+                            trackBar.Enabled = true;
+                            btnRun.Enabled = true;
+                        }));
                 }));
                 pictureBox.Image = conv.getImage(textBoxfile.Text);
                 //pictureBox.Image = conv.getImage(videofile);
@@ -259,22 +267,30 @@ namespace fftools
                 }
             }
         }
+        string dirfault = string.Empty;
         private void SaveFileToDisk()
         {
             SaveFileDialog savefile = new SaveFileDialog()
             {
                 Filter = "Gif file(*.gif*)|*.gif|Png file(*.png*)|*.png|Jpg file(*.jpg*)|*.jpg",
-                Title = @"Save gif to disk",
+                Title = @"Save to disk",
                 FilterIndex =2,
                 //InitialDirectory = Environment.CurrentDirectory,
                 //RestoreDirectory = true,
                 ValidateNames = false,
-                FileName = textBoxfile.Text + "_thumbss_0000.gif"
+                //FileName = Path.GetFileName(textBoxfile.Text)
             };
+            
+            if (String.IsNullOrEmpty(dirfault)) dirfault = Path.GetDirectoryName(textBoxfile.Text);
+            savefile.FileName = AnalizarFileName(Path.Combine(dirfault, Path.GetFileName(textBoxfile.Text)));
+
             if (savefile.ShowDialog() == DialogResult.OK)
             {
+                //todo: pendiente - habria que analizar si existe ya un fichero con este nombre
+                //inicial y cambiarle la numeracion.
                 if (pictureBox.Image != null )
                 {
+                    dirfault = Path.GetDirectoryName(savefile.FileName);
                     pictureBox.Image.Save(savefile.FileName, ImageFormat.Gif);
                     //using (FileStream file = new FileStream(savefile.FileName, FileMode.Create, System.IO.FileAccess.Write))
                     //{
@@ -286,7 +302,38 @@ namespace fftools
 
         private void trackBar_Scroll(object sender, EventArgs e)
         {
-            pictureBox.Image = conv.getImage(videofile, trackBar.Value);
+            if (!InvokeRequired)//asi cuando estamos en automático no extrae la imagen de aqui
+            {
+                pictureBox.Image = conv.getImage(videofile, trackBar.Value);
+            }
+        }
+        private void KillProcess(string Nameprocess)
+        {
+            foreach (var process in Process.GetProcesses())
+            {
+                if (process.ProcessName != null)
+                    if (process.ProcessName == Nameprocess)
+                    {
+                        //Debug.WriteLine($"Kiled process {process}");
+                        process.Kill();
+                    }
+            }
+        }
+        public static string AnalizarFileName(string pathfilename)
+        {
+            //combrueba si existe un fichero en el directorio.
+            string namefile = Path.GetFileName(pathfilename);
+            //obtenemos el directorio
+            DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(pathfilename));
+            int iter = 0; //una variable pivote
+            foreach (var item in dir.GetFiles(namefile+"*"))
+            {
+                iter++;
+            }
+            CultureInfo ci = CultureInfo.InvariantCulture;
+            string Nuevoname = namefile+"_thumbs_"+iter.ToString("D4",ci);
+            return Nuevoname;
+            
         }
     }
 }
