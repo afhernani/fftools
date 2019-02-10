@@ -795,7 +795,7 @@ namespace fftools
 			}
 			System.Drawing.Image ou;
 			string temp = Path.GetTempPath();
-			Debug.WriteLine(temp + " Image thumbails from file");
+			//Debug.WriteLine(temp + " Image thumbails from file");
 			int valor = input.DurationMs / 4;//imagen a 1/3 del tiempo total.
 			if (valor <= 0)
 				valor = 60;
@@ -803,18 +803,18 @@ namespace fftools
 			string filename = fil + ".jpg";
 			string finalpath = Path.Combine(temp, filename);
 			string Params = String.Format("-ss {1} -i \"{0}\" -vframes {1} \"{2}\" -hide_banner", input.Path, valor, finalpath);
-			Debug.WriteLine(Params);
+			//Debug.WriteLine(Params);
 			OnlyRunProcess(Params);
 
 			ou=LoadImageFromFile(finalpath);
 			try {
 				File.Delete(finalpath);
 			} catch (Exception ex) {
-				Debug.WriteLine(ex.Message);
+				//Debug.WriteLine(ex.Message);
 				throw new ConvertException(ex.ToString());
 			}
 			
-			Debug.WriteLine("fin de proceso de extraccion");
+			//Debug.WriteLine("fin de proceso de extraccion");
 			return ou;
 		}
         public System.Drawing.Image getImage(string inputpath, int time)
@@ -840,13 +840,13 @@ namespace fftools
             }
             System.Drawing.Image ou;
             string temp = Path.GetTempPath();
-            Debug.WriteLine(temp + " Image thumbails from file");
+            //Debug.WriteLine($"time Image thumbails from file at {time}");
             int valor = time;//imagen en la posicion indicada. 
             string fil = System.Guid.NewGuid().ToString();
             string filename = fil + ".png";
             string finalpath = Path.Combine(temp, filename);
             string Params = String.Format("-ss {1} -i \"{0}\" -vframes {1} \"{2}\" -hide_banner", input.Path, valor, finalpath);
-            Debug.WriteLine(Params);
+            //Debug.WriteLine(Params);
             OnlyRunProcess(Params);
 
             ou = LoadImageFromFile(finalpath);
@@ -856,11 +856,11 @@ namespace fftools
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                //Debug.WriteLine(ex.Message);
                 throw new ConvertException(ex.ToString());
             }
 
-            Debug.WriteLine("fin de proceso de extraccion");
+            //Debug.WriteLine("fin de proceso de extraccion");
             return ou;
         }
         #endregion

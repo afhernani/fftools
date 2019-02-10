@@ -63,6 +63,7 @@ namespace fftools
             // btnRun
             // 
             this.btnRun.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnRun.Enabled = false;
             this.btnRun.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnRun.Location = new System.Drawing.Point(220, 418);
             this.btnRun.Name = "btnRun";
@@ -183,6 +184,8 @@ namespace fftools
             // 
             // trackBar
             // 
+            this.trackBar.Enabled = false;
+            this.trackBar.LargeChange = 1;
             this.trackBar.Location = new System.Drawing.Point(12, 380);
             this.trackBar.MaximumSize = new System.Drawing.Size(0, 20);
             this.trackBar.Minimum = 1;
@@ -190,7 +193,8 @@ namespace fftools
             this.trackBar.Name = "trackBar";
             this.trackBar.Size = new System.Drawing.Size(379, 20);
             this.trackBar.TabIndex = 5;
-            this.trackBar.Value = 5;
+            this.trackBar.TickFrequency = 5;
+            this.trackBar.Value = 1;
             this.trackBar.Scroll += new System.EventHandler(this.trackBar_Scroll);
             // 
             // MainForm
